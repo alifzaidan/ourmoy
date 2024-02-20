@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:ourmoy/screens/goals_screen.dart';
 import 'package:ourmoy/screens/history_screen.dart';
 import 'package:ourmoy/screens/navigation.dart';
+import 'package:ourmoy/screens/settings_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,6 +25,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const Navigation(),
         '/history': (context) => const HistoryScreen(),
+        '/goals': (context) => const GoalsScreen(),
+        '/settings': (context) => const SettingsScreen(),
       },
     );
   }

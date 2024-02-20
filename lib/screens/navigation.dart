@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
+import 'package:ourmoy/screens/goals_screen.dart';
 import 'package:ourmoy/screens/history_screen.dart';
 import 'package:ourmoy/screens/home_screen.dart';
+import 'package:ourmoy/screens/settings_screen.dart';
 
 const page = [
   HomeScreen(),
   HistoryScreen(),
   HistoryScreen(),
-  HistoryScreen(),
-  HistoryScreen(),
+  GoalsScreen(),
+  SettingsScreen(),
 ];
 
 class Navigation extends StatelessWidget {
