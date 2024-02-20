@@ -11,6 +11,7 @@ class HomeScreen extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           CupertinoSliverNavigationBar(
+            backgroundColor: const Color(0xFFFFFFFF),
             leading: Text(
               'Total balance',
               style: GoogleFonts.golosText(
@@ -35,11 +36,15 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             alwaysShowMiddle: false,
+            border: Border.all(color: Colors.transparent),
           ),
           SliverFillRemaining(
             hasScrollBody: false,
             child: Column(
-              children: [_accounts(), _lasttransactions()],
+              children: [
+                _accounts(),
+                _lasttransactions(),
+              ],
             ),
           ),
         ],
@@ -149,7 +154,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const Icon(
-                CupertinoIcons.arrowtriangle_right_circle_fill,
+                CupertinoIcons.arrow_up_right_circle_fill,
                 color: Color(0xFF000000),
                 size: 25,
               ),
@@ -189,17 +194,17 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     subtitle: Text(
-                      'Rp. 2.000',
+                      'Today',
                       style: GoogleFonts.golosText(
                         fontSize: 14,
                         color: const Color(0xFFC2C8CF),
                       ),
                     ),
                     trailing: Text(
-                      'Today',
+                      '+Rp. 2.000',
                       style: GoogleFonts.golosText(
-                        fontSize: 14,
-                        color: const Color(0xFFC2C8CF),
+                        fontSize: 16,
+                        color: const Color(0xFF1BC760),
                       ),
                     ),
                   ),
