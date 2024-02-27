@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ourmoy/screens/home_screen.dart';
+import 'package:ourmoy/screens/profile_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -112,9 +113,7 @@ class SettingsScreen extends StatelessWidget {
                         trailing: const CupertinoListTileChevron(),
                         onTap: () => Navigator.of(context).push(
                           CupertinoPageRoute(
-                            builder: (BuildContext context) {
-                              return const HomeScreen();
-                            },
+                            builder: (context) => const ProfileScreen(),
                           ),
                         ),
                       ),

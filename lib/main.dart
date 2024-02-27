@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:ourmoy/screens/goals_screen.dart';
 import 'package:ourmoy/screens/history_screen.dart';
 import 'package:ourmoy/screens/navigation.dart';
+import 'package:ourmoy/screens/profile_screen.dart';
 import 'package:ourmoy/screens/settings_screen.dart';
+import 'package:ourmoy/screens/transaction_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,8 +27,10 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const Navigation(),
         '/history': (context) => const HistoryScreen(),
+        '/transaction': (context) => const TransactionScreen(),
         '/goals': (context) => const GoalsScreen(),
         '/settings': (context) => const SettingsScreen(),
+        '/profile': (context) => const ProfileScreen(),
       },
     );
   }
