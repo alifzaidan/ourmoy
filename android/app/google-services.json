@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "409794016088",
+    "project_id": "ourmoy",
+    "storage_bucket": "ourmoy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409794016088:android:e67e180f6b677122edeb2d",
+        "android_client_info": {
+          "package_name": "com.example.ourmoy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBZn2mHveW3QZiAonlwdsptoFiXhvnaPc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
