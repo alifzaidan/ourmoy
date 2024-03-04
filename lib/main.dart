@@ -1,4 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ourmoy/firebase_options.dart';
 import 'package:ourmoy/screens/goals_screen.dart';
 import 'package:ourmoy/screens/history_screen.dart';
 import 'package:ourmoy/screens/navigation.dart';
@@ -6,7 +8,12 @@ import 'package:ourmoy/screens/profile_screen.dart';
 import 'package:ourmoy/screens/settings_screen.dart';
 import 'package:ourmoy/screens/transaction_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MyApp());
 }
 

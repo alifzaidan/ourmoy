@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:ourmoy/services/accounts_services.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -10,34 +13,7 @@ class HomeScreen extends StatelessWidget {
     return CupertinoPageScaffold(
       child: CustomScrollView(
         slivers: [
-          CupertinoSliverNavigationBar(
-            backgroundColor: const Color(0xFFFFFFFF),
-            leading: Text(
-              'Total balance',
-              style: GoogleFonts.golosText(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                height: 2.5,
-                color: const Color(0xFFC2C8CF),
-              ),
-            ),
-            largeTitle: Text(
-              'Rp. 2.560.000',
-              style: GoogleFonts.golosText(
-                fontSize: 32,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            middle: Text(
-              'Rp. 2.560.000',
-              style: GoogleFonts.golosText(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            alwaysShowMiddle: false,
-            border: Border.all(color: Colors.transparent),
-          ),
+          _totalBalance(),
           SliverFillRemaining(
             hasScrollBody: false,
             child: Column(
@@ -49,6 +25,63 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  CupertinoSliverNavigationBar _totalBalance() {
+    return CupertinoSliverNavigationBar(
+      backgroundColor: const Color(0xFFFFFFFF),
+      leading: Text(
+        'Total balance',
+        style: GoogleFonts.golosText(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          height: 2.5,
+          color: const Color(0xFFC2C8CF),
+        ),
+      ),
+      largeTitle: StreamBuilder<double>(
+        stream: DbAccounts.getTotalBalance(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final formatter =
+                NumberFormat.currency(locale: 'id_ID', symbol: 'Rp. ');
+            String formattedBalance = formatter.format(snapshot.data as double);
+            return Text(
+              formattedBalance,
+              style: GoogleFonts.golosText(
+                fontSize: 32,
+                fontWeight: FontWeight.w600,
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          return const CircularProgressIndicator();
+        },
+      ),
+      middle: StreamBuilder<double>(
+        stream: DbAccounts.getTotalBalance(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final formatter =
+                NumberFormat.currency(locale: 'id_ID', symbol: 'Rp. ');
+            String formattedBalance = formatter.format(snapshot.data as double);
+            return Text(
+              formattedBalance,
+              style: GoogleFonts.golosText(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          return const CircularProgressIndicator();
+        },
+      ),
+      alwaysShowMiddle: false,
+      border: Border.all(color: Colors.transparent),
     );
   }
 
@@ -80,52 +113,74 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 20),
-            height: 170,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 2,
-              itemBuilder: (context, index) {
+          StreamBuilder<QuerySnapshot>(
+            stream: DbAccounts.getData(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
                 return Container(
-                  width: 320,
-                  margin: const EdgeInsets.only(right: 10),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF5478F6),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Muchammad Alif Zaidan',
-                        style: GoogleFonts.golosText(
-                          fontSize: 18,
-                          color: const Color(0xFFFFFFFF),
+                  margin: const EdgeInsets.only(top: 20),
+                  height: 170,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 2,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot accounts = snapshot.data!.docs[index];
+
+                      final formatter = NumberFormat.currency(
+                          locale: 'id_ID', symbol: 'Rp. ');
+                      String formattedBalance =
+                          formatter.format(accounts.get('balance'));
+
+                      DateTime dateTime =
+                          DateTime.parse(accounts.get('lastTransaction'));
+                      String formattedDate =
+                          DateFormat('EEEE, dd MMMM yyyy').format(dateTime);
+
+                      return Container(
+                        width: 320,
+                        margin: const EdgeInsets.only(right: 10),
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF5478F6),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                      ),
-                      Text(
-                        'Rp. 2.560.000',
-                        style: GoogleFonts.golosText(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFFFFFFFF),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              accounts.get('name'),
+                              style: GoogleFonts.golosText(
+                                fontSize: 18,
+                                color: const Color(0xFFFFFFFF),
+                              ),
+                            ),
+                            Text(
+                              formattedBalance,
+                              style: GoogleFonts.golosText(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFFFFFFFF),
+                              ),
+                            ),
+                            Text(
+                              'Last : $formattedDate',
+                              style: GoogleFonts.golosText(
+                                fontSize: 16,
+                                color: const Color(0xFFFFFFFF),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      Text(
-                        'Tidak ada tagihan yang harus dibayar',
-                        style: GoogleFonts.golosText(
-                          fontSize: 16,
-                          color: const Color(0xFFFFFFFF),
-                        ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
                 );
-              },
-            ),
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+              return const CircularProgressIndicator();
+            },
           ),
         ],
       ),

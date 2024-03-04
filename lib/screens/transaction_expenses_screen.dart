@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ourmoy/models/categories_model.dart';
 
 class ExpensesPage extends StatelessWidget {
   const ExpensesPage({super.key});
@@ -114,29 +115,32 @@ class ExpensesPage extends StatelessWidget {
               padding: const EdgeInsets.all(0),
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 5,
+                crossAxisCount: 4,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
               ),
-              itemCount: 15,
+              itemCount: categoriesList.length,
               itemBuilder: (context, index) {
+                final Categories category = categoriesList[index];
+
                 return Container(
-                  padding: const EdgeInsets.all(10),
+                  // padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF6F7F9),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
-                        CupertinoIcons.car_detailed,
+                      Icon(
+                        category.icon,
                         color: Color(0xFF000000),
                       ),
+                      const SizedBox(height: 2),
                       Text(
-                        'Car',
+                        category.name,
                         style: GoogleFonts.golosText(
-                          fontSize: 14,
+                          fontSize: 12,
                         ),
                       ),
                     ],
