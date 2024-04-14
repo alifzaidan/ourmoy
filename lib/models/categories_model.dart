@@ -12,6 +12,10 @@ class Categories {
 
 var categoriesList = [
   Categories(
+    name: 'Income',
+    icon: CupertinoIcons.arrow_down_square,
+  ),
+  Categories(
     name: 'Home',
     icon: CupertinoIcons.house_fill,
   ),

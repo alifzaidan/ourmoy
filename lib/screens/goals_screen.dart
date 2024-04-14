@@ -1,6 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:ourmoy/models/categories_model.dart';
+import 'package:ourmoy/services/accounts_services.dart';
+import 'package:ourmoy/services/goals_services.dart';
 
 class GoalsScreen extends StatelessWidget {
   const GoalsScreen({super.key});
@@ -47,69 +52,122 @@ class GoalsScreen extends StatelessWidget {
     );
   }
 
-  Container _goals() {
-    return Container(
-      height: 500,
-      padding: const EdgeInsets.all(20),
-      margin: const EdgeInsets.only(bottom: 62),
-      decoration: const BoxDecoration(
-        color: Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
-        ),
-      ),
-      child: SizedBox(
-        height: 500,
-        child: ListView.builder(
-          padding: const EdgeInsets.all(0),
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: 2,
-          scrollDirection: Axis.vertical,
-          itemBuilder: (context, index) {
-            return Card(
-              color: const Color(0xFFF6F7F9),
-              margin: const EdgeInsets.only(top: 10),
-              elevation: 0,
-              child: ListTile(
-                leading: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF000000),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    CupertinoIcons.device_phone_portrait,
-                    color: Color(0xFFFFFFFF),
-                  ),
-                ),
-                title: Text(
-                  'Iphone 16 Pro Max',
-                  style: GoogleFonts.golosText(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                subtitle: Text(
-                  'Rp. 2.000.000 / Rp. 20.000.000',
-                  style: GoogleFonts.golosText(
-                    fontSize: 14,
-                    color: const Color(0xFFC2C8CF),
-                  ),
-                ),
-                trailing: Text(
-                  '10%',
-                  style: GoogleFonts.golosText(
-                    fontSize: 16,
-                    color: const Color(0xFFF65454),
-                  ),
-                ),
+  Widget _goals() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: DbGoals.getData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Container(
+            height: snapshot.data!.docs.length * 150.0,
+            padding: const EdgeInsets.all(20),
+            margin: const EdgeInsets.only(bottom: 62),
+            decoration: const BoxDecoration(
+              color: Color(0xFFFFFFFF),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
               ),
-            );
-          },
-        ),
-      ),
+            ),
+            child: SizedBox(
+              height: snapshot.data!.docs.length * 150.0,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(0),
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: snapshot.data!.docs.length,
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot goals = snapshot.data!.docs[index];
+
+                  final Categories categories = categoriesList[index];
+                  IconData icon = categories.icon;
+                  for (var categories in categoriesList) {
+                    if (goals.get('category') == categories.name) {
+                      icon = categories.icon;
+                    }
+                  }
+
+                  final formatter = NumberFormat.currency(
+                    locale: 'id_ID',
+                    symbol: 'Rp. ',
+                  );
+                  String formattedPrice = formatter.format(goals.get('price'));
+
+                  double percentage = 0;
+
+                  return Card(
+                    color: const Color(0xFFF6F7F9),
+                    margin: const EdgeInsets.only(top: 10),
+                    elevation: 0,
+                    child: StreamBuilder<double>(
+                      stream: DbAccounts.getTotalBalance(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          final formatter = NumberFormat.currency(
+                            locale: 'id_ID',
+                            symbol: 'Rp. ',
+                          );
+                          String formattedBalance =
+                              formatter.format(snapshot.data as double);
+                          percentage = (snapshot.data as double) /
+                              double.parse(goals.get('price').toString()) *
+                              100;
+
+                          return ListTile(
+                            leading: Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF000000),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Icon(
+                                icon,
+                                color: const Color(0xFFFFFFFF),
+                              ),
+                            ),
+                            title: Text(
+                              goals.get('name'),
+                              style: GoogleFonts.golosText(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            subtitle: Text(
+                              '$formattedBalance /\n$formattedPrice',
+                              style: GoogleFonts.golosText(
+                                fontSize: 14,
+                                color: const Color(0xFFC2C8CF),
+                              ),
+                            ),
+                            trailing: Text(
+                              '${percentage.toStringAsFixed(0)}%',
+                              style: GoogleFonts.golosText(
+                                fontSize: 16,
+                                color: (percentage >= 80)
+                                    ? (percentage >= 40)
+                                        ? const Color(0xFFF65454)
+                                        : const Color(0xFFF65454)
+                                    : const Color(0xFFF65454),
+                              ),
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        }
+                        return const CircularProgressIndicator();
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return const Text('Error');
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 }

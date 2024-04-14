@@ -6,6 +6,7 @@ import 'package:ourmoy/screens/history_screen.dart';
 import 'package:ourmoy/screens/navigation.dart';
 import 'package:ourmoy/screens/profile_screen.dart';
 import 'package:ourmoy/screens/settings_screen.dart';
+import 'package:ourmoy/screens/test_screen.dart';
 import 'package:ourmoy/screens/transaction_screen.dart';
 
 Future<void> main() async {
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/goals': (context) => const GoalsScreen(),
         '/settings': (context) => const SettingsScreen(),
         '/profile': (context) => const ProfileScreen(),
+        '/test': (context) => const TestScreen(),
       },
     );
   }

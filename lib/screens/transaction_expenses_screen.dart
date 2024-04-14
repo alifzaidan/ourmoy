@@ -134,7 +134,7 @@ class ExpensesPage extends StatelessWidget {
                     children: [
                       Icon(
                         category.icon,
-                        color: Color(0xFF000000),
+                        color: const Color(0xFF000000),
                       ),
                       const SizedBox(height: 2),
                       Text(
@@ -240,7 +240,7 @@ class ExpensesPage extends StatelessWidget {
     return Container(
       height: 100,
       width: double.infinity,
-      margin: const EdgeInsets.only(top: 16, bottom: 62),
+      margin: const EdgeInsets.only(top: 16, bottom: 74),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: const Color(0xFFFFFFFF),

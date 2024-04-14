@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ourmoy/screens/profile_screen.dart';
+import 'package:ourmoy/screens/test_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -35,7 +36,7 @@ class SettingsScreen extends StatelessWidget {
             child: Column(
               children: [
                 Container(
-                  height: 500,
+                  height: 600,
                   padding: const EdgeInsets.all(20),
                   margin: const EdgeInsets.only(top: 16, bottom: 62),
                   decoration: BoxDecoration(
@@ -113,6 +114,20 @@ class SettingsScreen extends StatelessWidget {
                         onTap: () => Navigator.of(context).push(
                           CupertinoPageRoute(
                             builder: (context) => const ProfileScreen(),
+                          ),
+                        ),
+                      ),
+                      const Divider(),
+                      CupertinoListTile(
+                        title: const Text('Test'),
+                        leading: const Icon(
+                          CupertinoIcons.rocket_fill,
+                          color: Color(0xFF000000),
+                        ),
+                        trailing: const CupertinoListTileChevron(),
+                        onTap: () => Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (context) => const TestScreen(),
                           ),
                         ),
                       ),

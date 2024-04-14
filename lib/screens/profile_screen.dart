@@ -82,11 +82,11 @@ class ProfileScreen extends StatelessWidget {
               if (snapshot.hasData) {
                 return Container(
                   margin: const EdgeInsets.only(top: 16),
-                  height: 400,
+                  height: snapshot.data!.docs.length * 200,
                   child: ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(0),
-                    itemCount: 2,
+                    itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       DocumentSnapshot accounts = snapshot.data!.docs[index];
 

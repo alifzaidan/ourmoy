@@ -32,6 +32,15 @@ class DbAccounts {
     await accounts.doc(snapshot.id).update(itemaccounts.toJson());
   }
 
+  static Future<void> updateBalance(
+      {required String id,
+      required int balance,
+      required String lastTransaction}) async {
+    await accounts
+        .doc(id)
+        .update({'balance': balance, 'lastTransaction': lastTransaction});
+  }
+
   static Future<void> deleteData(DocumentSnapshot<Object?> itemaccounts) async {
     await accounts.doc(itemaccounts.id).delete();
   }
