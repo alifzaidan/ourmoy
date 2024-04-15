@@ -32,15 +32,19 @@ var categoriesList = [
     icon: CupertinoIcons.cart_fill,
   ),
   Categories(
-    name: 'Cafe',
-    icon: CupertinoIcons.cart_fill,
+    name: 'Campuss',
+    icon: CupertinoIcons.book_solid,
   ),
   Categories(
     name: 'Clothes',
-    icon: CupertinoIcons.cart_fill,
+    icon: CupertinoIcons.tags_solid,
   ),
   Categories(
     name: 'Health',
     icon: CupertinoIcons.heart_fill,
+  ),
+  Categories(
+    name: 'Entertainment',
+    icon: CupertinoIcons.game_controller_solid,
   ),
 ];

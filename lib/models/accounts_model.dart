@@ -6,6 +6,7 @@ class AccountsModel {
   final String email;
   final int balance;
   final String lastTransaction;
+  final String color;
 
   AccountsModel({
     required this.name,
@@ -13,6 +14,7 @@ class AccountsModel {
     required this.email,
     required this.balance,
     required this.lastTransaction,
+    required this.color,
   });
 
   Map<String, dynamic> toJson() {
@@ -22,6 +24,7 @@ class AccountsModel {
       'email': email,
       'balance': balance,
       'lastTransaction': lastTransaction,
+      'color': color,
     };
   }
 
@@ -32,6 +35,7 @@ class AccountsModel {
       email: json['email'],
       balance: json['balance'],
       lastTransaction: json['lastTransaction'],
+      color: json['color'],
     );
   }
 
@@ -42,6 +46,7 @@ class AccountsModel {
       email: snapshot.get('email'),
       balance: snapshot.get('balance'),
       lastTransaction: snapshot.get('lastTransaction'),
+      color: snapshot.get('color'),
     );
   }
 }

@@ -124,11 +124,17 @@ class _IncomePageState extends State<IncomePage> {
                         margin: const EdgeInsets.only(right: 10),
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF5478F6),
+                          color: Color(int.parse(accounts.get('color'))),
                           borderRadius: BorderRadius.circular(20),
+                          image: const DecorationImage(
+                            image: AssetImage('assets/images/card_effect.png'),
+                            alignment: Alignment.bottomRight,
+                            opacity: 0.8,
+                          ),
                         ),
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
+                          pressedOpacity: 1.0,
                           onPressed: () {
                             setState(() {
                               _selectedAccount = accounts.id;
