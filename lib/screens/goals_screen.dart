@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:ourmoy/models/categories_model.dart';
+import 'package:ourmoy/screens/addgoals_screen.dart';
 import 'package:ourmoy/services/accounts_services.dart';
 import 'package:ourmoy/services/goals_services.dart';
 
@@ -32,9 +33,18 @@ class GoalsScreen extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            trailing: const Icon(
-              CupertinoIcons.add_circled_solid,
-              color: Color(0xFF000000),
+            trailing: IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (context) => const AddGoalsScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(
+                CupertinoIcons.add_circled_solid,
+                color: Color(0xFF000000),
+              ),
             ),
             alwaysShowMiddle: false,
             border: Border.all(color: Colors.transparent),
@@ -78,7 +88,8 @@ class GoalsScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   DocumentSnapshot goals = snapshot.data!.docs[index];
 
-                  final Categories categories = categoriesList[index];
+                  final Categories categories = categoriesList.firstWhere(
+                      (element) => element.name == goals.get('category'));
                   IconData icon = categories.icon;
                   for (var categories in categoriesList) {
                     if (goals.get('category') == categories.name) {
@@ -140,13 +151,15 @@ class GoalsScreen extends StatelessWidget {
                               ),
                             ),
                             trailing: Text(
-                              '${percentage.toStringAsFixed(0)}%',
+                              percentage >= 100
+                                  ? 'Done ✅'
+                                  : '${percentage.toStringAsFixed(0)}%',
                               style: GoogleFonts.golosText(
                                 fontSize: 16,
-                                color: (percentage >= 80)
-                                    ? (percentage >= 40)
-                                        ? const Color(0xFFF65454)
-                                        : const Color(0xFFF65454)
+                                color: (percentage >= 40)
+                                    ? (percentage >= 80)
+                                        ? const Color(0xFF1BC760)
+                                        : const Color(0xFFE9A115)
                                     : const Color(0xFFF65454),
                               ),
                             ),

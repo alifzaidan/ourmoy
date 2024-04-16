@@ -1,43 +1,65 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:ourmoy/models/categories_model.dart';
-import 'package:ourmoy/models/transactions_model.dart';
-import 'package:ourmoy/services/accounts_services.dart';
-import 'package:ourmoy/services/transactions_services.dart';
+import 'package:ourmoy/models/goals_model.dart';
+import 'package:ourmoy/services/goals_services.dart';
 
-class ExpensesPage extends StatefulWidget {
-  const ExpensesPage({super.key});
+class AddGoalsScreen extends StatefulWidget {
+  const AddGoalsScreen({super.key});
 
   @override
-  State<ExpensesPage> createState() => _ExpensesPageState();
+  State<AddGoalsScreen> createState() => _AddGoalsScreenState();
 }
 
-class _ExpensesPageState extends State<ExpensesPage> {
-  final TextEditingController _nominalController = TextEditingController();
-  final TextEditingController _descController = TextEditingController();
-  String _selectedAccount = "";
+class _AddGoalsScreenState extends State<AddGoalsScreen> {
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   String _selectedCategory = "";
-  int _accountBalance = 0;
-  String _nameAccount = "";
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _inputNominalAndDesc(),
-        _categories(),
-        _accounts(),
-        _saveButton(),
-      ],
+    return CupertinoPageScaffold(
+      child: CustomScrollView(
+        slivers: [
+          CupertinoSliverNavigationBar(
+            stretch: true,
+            backgroundColor: const Color(0xFFFFFFFF),
+            largeTitle: Text(
+              'Add Goals',
+              style: GoogleFonts.golosText(
+                fontSize: 32,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            middle: Text(
+              'Add Goals',
+              style: GoogleFonts.golosText(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            alwaysShowMiddle: false,
+            border: Border.all(color: Colors.transparent),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Column(
+              children: [
+                _inputPriceAndName(),
+                _categories(),
+                _saveButton(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Container _inputNominalAndDesc() {
+  Container _inputPriceAndName() {
     return Container(
-      height: 180,
+      height: 220,
       padding: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
         color: Color(0xFFFFFFFF),
@@ -47,9 +69,18 @@ class _ExpensesPageState extends State<ExpensesPage> {
         ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            'Set Your Target 🚀',
+            style: GoogleFonts.golosText(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 16),
           CupertinoTextField(
-            controller: _nominalController,
+            controller: _priceController,
             keyboardType: TextInputType.number,
             prefix: const Padding(
               padding: EdgeInsets.only(left: 20),
@@ -79,8 +110,8 @@ class _ExpensesPageState extends State<ExpensesPage> {
           ),
           const SizedBox(height: 16),
           CupertinoTextField(
-            controller: _descController,
-            placeholder: 'Description Item',
+            controller: _nameController,
+            placeholder: 'Name Item',
             placeholderStyle: GoogleFonts.golosText(
               fontWeight: FontWeight.w400,
               color: const Color(0xFFAAAAAA),
@@ -179,125 +210,6 @@ class _ExpensesPageState extends State<ExpensesPage> {
     );
   }
 
-  Container _accounts() {
-    return Container(
-      height: 200,
-      margin: const EdgeInsets.only(top: 16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Select Accounts',
-                style: GoogleFonts.golosText(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Icon(
-                CupertinoIcons.plus_circle_fill,
-                color: Color(0xFF000000),
-                size: 25,
-              ),
-            ],
-          ),
-          StreamBuilder<QuerySnapshot>(
-            stream: DbAccounts.getData(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  height: 100,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, index) {
-                      DocumentSnapshot accounts = snapshot.data!.docs[index];
-
-                      final formatter = NumberFormat.currency(
-                          locale: 'id_ID', symbol: 'Rp. ');
-                      String formattedBalance =
-                          formatter.format(accounts.get('balance'));
-
-                      return Container(
-                        width: 180,
-                        margin: const EdgeInsets.only(right: 10),
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Color(int.parse(accounts.get('color'))),
-                          borderRadius: BorderRadius.circular(20),
-                          image: const DecorationImage(
-                            image: AssetImage('assets/images/card_effect.png'),
-                            alignment: Alignment.bottomRight,
-                            opacity: 0.8,
-                          ),
-                        ),
-                        child: CupertinoButton(
-                          padding: const EdgeInsets.all(0),
-                          pressedOpacity: 1.0,
-                          onPressed: () {
-                            setState(() {
-                              _selectedAccount = accounts.id;
-                              _accountBalance = accounts.get('balance');
-                              _nameAccount = accounts.get('shortName');
-                            });
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    accounts.get('shortName'),
-                                    style: GoogleFonts.golosText(
-                                      fontSize: 18,
-                                      color: const Color(0xFFFFFFFF),
-                                    ),
-                                  ),
-                                  Icon(
-                                    _selectedAccount == accounts.id.toString()
-                                        ? CupertinoIcons.checkmark_circle_fill
-                                        : CupertinoIcons.circle,
-                                    color: const Color(0xFFFFFFFF),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                formattedBalance,
-                                style: GoogleFonts.golosText(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: const Color(0xFFFFFFFF),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              }
-              return const CircularProgressIndicator();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   Container _saveButton() {
     return Container(
       height: 100,
@@ -312,13 +224,13 @@ class _ExpensesPageState extends State<ExpensesPage> {
         color: const Color(0xFFFCB226),
         borderRadius: BorderRadius.circular(10),
         onPressed: () {
-          if (_nominalController.text.isEmpty) {
+          if (_priceController.text.isEmpty) {
             showCupertinoDialog(
               context: context,
               builder: (context) {
                 return CupertinoAlertDialog(
                   title: const Text('Error'),
-                  content: const Text('Nominal cannot be empty'),
+                  content: const Text('Price cannot be empty'),
                   actions: [
                     CupertinoDialogAction(
                       child: const Text('OK'),
@@ -330,13 +242,13 @@ class _ExpensesPageState extends State<ExpensesPage> {
                 );
               },
             );
-          } else if (_descController.text.isEmpty) {
+          } else if (_nameController.text.isEmpty) {
             showCupertinoDialog(
               context: context,
               builder: (context) {
                 return CupertinoAlertDialog(
                   title: const Text('Error'),
-                  content: const Text('Description cannot be empty'),
+                  content: const Text('Name item cannot be empty'),
                   actions: [
                     CupertinoDialogAction(
                       child: const Text('OK'),
@@ -366,58 +278,30 @@ class _ExpensesPageState extends State<ExpensesPage> {
                 );
               },
             );
-          } else if (_selectedAccount.isEmpty) {
-            showCupertinoDialog(
-              context: context,
-              builder: (context) {
-                return CupertinoAlertDialog(
-                  title: const Text('Error'),
-                  content: const Text('Please select an account first!'),
-                  actions: [
-                    CupertinoDialogAction(
-                      child: const Text('OK'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
           } else {
-            final newTransaction = TransactionsModel(
-              nominal: int.parse(_nominalController.text),
-              description: _descController.text,
+            final newGoals = GoalsModel(
+              name: _nameController.text,
+              price: int.parse(_priceController.text),
               category: _selectedCategory,
-              account: _selectedAccount,
+              isAchieved: false,
               datetime: DateTime.now().toString(),
             );
-            // DbTransactions.addData(itemtransactions: newTransaction);
-            DbTransactions.addDataByDate(itemtransactions: newTransaction);
-            DbAccounts.updateBalance(
-              id: _selectedAccount,
-              balance: _accountBalance - int.parse(_nominalController.text),
-              lastTransaction: DateTime.now().toString(),
-            );
+            DbGoals.addData(itemgoals: newGoals);
             showCupertinoDialog(
               context: context,
               builder: (context) {
                 return CupertinoAlertDialog(
                   title: const Text('Success'),
-                  content: Text(
-                      'Withdraw money for ${_descController.text} from $_nameAccount'),
+                  content: Text('Goals ${_nameController.text} has been added'),
                   actions: [
                     CupertinoDialogAction(
                       child: const Text('OK'),
                       onPressed: () {
                         Navigator.of(context).pop();
                         setState(() {
-                          _nominalController.clear();
-                          _descController.clear();
-                          _selectedAccount = "";
+                          _priceController.clear();
+                          _nameController.clear();
                           _selectedCategory = "";
-                          _accountBalance = 0;
-                          _nameAccount = "";
                         });
                       },
                     ),

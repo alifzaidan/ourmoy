@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:ourmoy/firebase_options.dart';
+import 'package:ourmoy/screens/addgoals_screen.dart';
 import 'package:ourmoy/screens/goals_screen.dart';
 import 'package:ourmoy/screens/history_screen.dart';
 import 'package:ourmoy/screens/navigation.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         '/goals': (context) => const GoalsScreen(),
         '/settings': (context) => const SettingsScreen(),
         '/profile': (context) => const ProfileScreen(),
+        '/addgoals': (context) => const AddGoalsScreen(),
         '/test': (context) => const TestScreen(),
       },
     );

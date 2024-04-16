@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GoalsModel {
   final String name;
-  final String price;
+  final int price;
   final String category;
   final bool isAchieved;
   final String datetime;

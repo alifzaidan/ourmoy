@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:ourmoy/models/categories_model.dart';
+import 'package:ourmoy/screens/history_screen.dart';
 import 'package:ourmoy/services/accounts_services.dart';
 import 'package:ourmoy/services/transactions_services.dart';
 
@@ -21,7 +22,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               children: [
                 _accounts(),
-                _lasttransactions(),
+                _lasttransactions(context),
               ],
             ),
           ),
@@ -194,9 +195,9 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Container _lasttransactions() {
+  Container _lasttransactions(BuildContext context) {
     return Container(
-      height: 520,
+      height: 545,
       padding: const EdgeInsets.all(20),
       margin: const EdgeInsets.only(top: 16, bottom: 74),
       decoration: BoxDecoration(
@@ -215,10 +216,20 @@ class HomeScreen extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const Icon(
-                CupertinoIcons.arrow_up_right_circle_fill,
-                color: Color(0xFF000000),
-                size: 25,
+              IconButton(
+                padding: const EdgeInsets.all(0),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => const HistoryScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  CupertinoIcons.arrow_up_right_circle_fill,
+                  color: Color(0xFF000000),
+                  size: 25,
+                ),
               ),
             ],
           ),
@@ -226,9 +237,8 @@ class HomeScreen extends StatelessWidget {
             stream: DbTransactions.getData(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Container(
-                  height: 450,
-                  padding: const EdgeInsets.only(top: 10),
+                return SizedBox(
+                  height: 455,
                   child: ListView.builder(
                     padding: const EdgeInsets.all(0),
                     physics: const NeverScrollableScrollPhysics(),
@@ -238,7 +248,9 @@ class HomeScreen extends StatelessWidget {
                       DocumentSnapshot transactions =
                           snapshot.data!.docs[index];
 
-                      final Categories categories = categoriesList[index];
+                      final Categories categories = categoriesList.firstWhere(
+                          (element) =>
+                              element.name == transactions.get('category'));
                       IconData icon = categories.icon;
                       for (var categories in categoriesList) {
                         if (transactions.get('category') == categories.name) {

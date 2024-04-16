@@ -5,7 +5,7 @@ CollectionReference goals = FirebaseFirestore.instance.collection('goals');
 
 class DbGoals {
   static Stream<QuerySnapshot> getData() {
-    return goals.snapshots();
+    return goals.orderBy('datetime', descending: true).snapshots();
   }
 
   static Future<void> addData({required GoalsModel itemgoals}) async {
